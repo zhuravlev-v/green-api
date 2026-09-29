@@ -6,11 +6,6 @@ const createEnv = () => {
     BASE_URL: z
       .string()
       .regex(/^\/(?:[^?#]*\/)?$/, 'BASE_URL must be a path like / or /subcatalog/'),
-    API_MOCKING: z
-      .string()
-      .refine((s) => s === 'true' || s === 'false')
-      .transform((s) => s === 'true')
-      .optional(),
     MOCK_JWT_SECRET: z.string().min(1),
     DEV: z.boolean(),
   });

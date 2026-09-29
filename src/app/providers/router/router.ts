@@ -1,29 +1,19 @@
 import { createBrowserRouter } from 'react-router';
 
-import { devMiddleware } from './middleware';
-import DefaultLayout from '@/layouts';
-import AuthLayout from '@/layouts/auth';
 import HomePage from '@/pages/home';
 import LoginPage from '@/pages/login';
 
+import { createAuthMiddleware } from './middleware';
+
 export const router = createBrowserRouter([
   {
-    Component: DefaultLayout,
-    children: [
-      {
-        index: true,
-        Component: HomePage,
-      },
-    ],
+    index: true,
+    Component: HomePage,
+    middleware: [createAuthMiddleware()],
   },
   {
-    Component: AuthLayout,
-    children: [
-      {
-        path: '/login',
-        Component: LoginPage,
-        // middleware: [devMiddleware],
-      },
-    ],
+    path: '/login',
+    Component: LoginPage,
+    middleware: [createAuthMiddleware({ unauthorizedOnly: true })],
   },
 ]);
