@@ -2,11 +2,10 @@ import * as z from 'zod';
 
 const createEnv = () => {
   const EnvSchema = z.object({
-    API_URL: z.url().default('http://localhost:5173/api/v1'),
+    API_URL: z.url(),
     BASE_URL: z
       .string()
       .regex(/^\/(?:[^?#]*\/)?$/, 'BASE_URL must be a path like / or /subcatalog/'),
-    MOCK_JWT_SECRET: z.string().min(1),
     DEV: z.boolean(),
   });
 
