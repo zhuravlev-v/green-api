@@ -1,5 +1,5 @@
 import { redirect, type MiddlewareFunction } from 'react-router';
-import { useUser } from '@/entities/user';
+import { useInstanceStore } from '@/entities/instance';
 
 type AuthMiddlewareOptions = {
   unauthorizedOnly: boolean;
@@ -8,7 +8,7 @@ type AuthMiddlewareOptions = {
 export const createAuthMiddleware =
   ({ unauthorizedOnly }: AuthMiddlewareOptions = { unauthorizedOnly: false }): MiddlewareFunction =>
   async (_, next) => {
-    const { isAuth } = useUser.getState();
+    const { isAuth } = useInstanceStore.getState();
 
     if (unauthorizedOnly && isAuth) {
       throw redirect('/');

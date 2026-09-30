@@ -1,7 +1,7 @@
 import { useForm, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import type { UserCredentialsRequest } from '@/entities/user';
+import type { InstanceCredentials } from '@/entities/instance';
 
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
@@ -10,11 +10,11 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 import { loginCredentials } from '../login.schema';
 
 type LoginFormProps = {
-  onSuccess: (pcredentials: UserCredentialsRequest) => void;
+  onSuccess: (credentials: InstanceCredentials) => Promise<void>;
 };
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
-  const form = useForm<UserCredentialsRequest>({
+  const form = useForm<InstanceCredentials>({
     resolver: zodResolver(loginCredentials),
     defaultValues: {
       idInstance: '',
@@ -26,8 +26,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     control: form.control,
   });
 
-  const onSubmit = async (credentials: UserCredentialsRequest) => {
-    onSuccess(credentials);
+  const onSubmit = async (credentials: InstanceCredentials) => {
+    try {
+      await onSuccess(credentials);
+    } catch {
+      return;
+    }
   };
 
   return (

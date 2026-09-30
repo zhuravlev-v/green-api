@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router';
-import { LoginForm } from '@/features/login';
-import { useUser } from '@/entities/user';
-import type { UserCredentialsRequest } from '@/entities/user';
+
+import { LoginForm, useLogin } from '@/features/login';
+import type { InstanceCredentials } from '@/entities/instance';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const setCredentials = useUser((state) => state.setCredentials);
+  const login = useLogin();
 
-  const onSuccess = (credentials: UserCredentialsRequest) => {
-    setCredentials(credentials);
-    navigate('/');
+  const onSuccess = async (credentials: InstanceCredentials) => {
+    await login(credentials);
+    await navigate('/');
   };
 
   return (

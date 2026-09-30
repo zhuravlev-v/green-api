@@ -1,9 +1,9 @@
+import { AppHeader } from '@/shared/components/header';
+
 export default function HomePage() {
   return (
     <div>
-      <header>Header</header>
-      <main>HomePage</main>
-      <footer>Footer</footer>
+      <AppHeader />
     </div>
   );
 }

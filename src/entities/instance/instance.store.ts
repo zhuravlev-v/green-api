@@ -1,18 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserCredentials = {
+export type StoredInstanceCredentials = {
   idInstance: string | null;
   apiTokenInstance: string | null;
 };
 
-export interface UserStore {
-  credentials: UserCredentials;
+export interface InstanceStore {
+  credentials: StoredInstanceCredentials;
   isAuth: boolean;
-  setCredentials: (credentials: UserCredentials) => void;
+  setCredentials: (credentials: StoredInstanceCredentials) => void;
+  clearCredentials: () => void;
 }
 
-export const useUser = create<UserStore>()(
+export const useInstanceStore = create<InstanceStore>()(
   persist(
     (set) => ({
       credentials: {
@@ -25,9 +26,17 @@ export const useUser = create<UserStore>()(
           credentials,
           isAuth: Boolean(credentials.idInstance && credentials.apiTokenInstance),
         }),
+      clearCredentials: () =>
+        set({
+          credentials: {
+            idInstance: null,
+            apiTokenInstance: null,
+          },
+          isAuth: false,
+        }),
     }),
     {
-      name: 'user',
+      name: 'instance',
     },
   ),
 );
