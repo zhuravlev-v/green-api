@@ -8,7 +8,7 @@ export function AppProvider() {
     <AppQueryClientProvider>
       <AppRouterProvider />
       <Toaster position="top-right" richColors />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </AppQueryClientProvider>
   );
 }
