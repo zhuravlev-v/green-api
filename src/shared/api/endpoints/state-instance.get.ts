@@ -8,6 +8,7 @@ export const instanceStateSchema = z.enum([
   'blocked',
   'sleepMode',
   'starting',
+  'pendingPassword',
   'yellowCard',
   'suspended',
 ]);
@@ -18,6 +19,8 @@ export const getStateInstanceResponseSchema = z.object({
 
 export type InstanceState = z.infer<typeof instanceStateSchema>;
 export type GetStateInstanceResponse = z.infer<typeof getStateInstanceResponseSchema>;
+
+// https://green-api.com/docs/api/account/GetStateInstance/#getstateinstance
 
 export function getStateInstance(
   credentials?: InstanceCredentials,
