@@ -6,6 +6,7 @@ export const instanceStateLabels: Record<InstanceState, string> = {
   blocked: 'Заблокирован',
   sleepMode: 'Спящий режим',
   starting: 'Запускается',
+  pendingPassword: 'Ожидает пароль двухфакторной аутентификации',
   yellowCard: 'Временно ограничен (устаревший статус)',
   suspended: 'Временно ограничен',
 };
