@@ -44,6 +44,8 @@ type RequestOptions<T> = {
   body?: unknown;
   signal?: AbortSignal;
   credentials?: InstanceCredentials;
+  pathSegments?: Array<string | number>;
+  searchParams?: Record<string, string | number | boolean | undefined>;
 };
 
 let apiClientConfig: ApiClientConfig = {};
@@ -62,13 +64,29 @@ function getCredentials(credentials?: InstanceCredentials): InstanceCredentials 
   return resolvedCredentials;
 }
 
-function createInstanceUrl(operation: string, credentials: InstanceCredentials): string {
+function createInstanceUrl(
+  operation: string,
+  credentials: InstanceCredentials,
+  pathSegments: Array<string | number> = [],
+  searchParams: Record<string, string | number | boolean | undefined> = {},
+): string {
   const baseUrl = env.API_URL.replace(/\/+$/, '');
   const idInstance = encodeURIComponent(credentials.idInstance);
   const apiTokenInstance = encodeURIComponent(credentials.apiTokenInstance);
   const encodedOperation = encodeURIComponent(operation);
+  const encodedPath = pathSegments.map((segment) => encodeURIComponent(segment)).join('/');
+  const query = new URLSearchParams();
 
-  return `${baseUrl}/waInstance${idInstance}/${encodedOperation}/${apiTokenInstance}`;
+  Object.entries(searchParams).forEach(([key, value]) => {
+    if (value !== undefined) {
+      query.set(key, String(value));
+    }
+  });
+
+  const pathname = `${baseUrl}/waInstance${idInstance}/${encodedOperation}/${apiTokenInstance}${encodedPath ? `/${encodedPath}` : ''}`;
+  const queryString = query.toString();
+
+  return queryString ? `${pathname}?${queryString}` : pathname;
 }
 
 async function parseResponse(response: Response): Promise<unknown> {
@@ -108,8 +126,10 @@ export async function request<T>({
   body,
   signal,
   credentials,
+  pathSegments,
+  searchParams,
 }: RequestOptions<T>): Promise<T> {
-  const url = createInstanceUrl(operation, getCredentials(credentials));
+  const url = createInstanceUrl(operation, getCredentials(credentials), pathSegments, searchParams);
   const headers = new Headers();
 
   if (body !== undefined) {
