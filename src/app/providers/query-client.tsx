@@ -2,6 +2,7 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@ta
 import { toast } from 'sonner';
 
 import { router } from '@/app/providers/router/router';
+import { useChatStore } from '@/entities/chat';
 import { useInstanceStore } from '@/entities/instance';
 import { configureApiClient, isApiError } from '@/shared/api';
 
@@ -33,6 +34,8 @@ function getApiErrorMessage(error: unknown): string {
       return 'Метод GREEN-API не найден';
     case 429:
       return 'Слишком много запросов. Попробуйте позже';
+    case 466:
+      return 'Достигнут лимит тарифа GREEN-API';
     case 499:
       return 'GREEN-API не успел обработать запрос';
     default:
@@ -64,6 +67,7 @@ function handleApiError(error: unknown): void {
   }
 
   clearCredentials();
+  useChatStore.getState().clear();
   queryClient.clear();
   void router.navigate('/login');
 }
