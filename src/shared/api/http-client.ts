@@ -2,7 +2,7 @@ import type * as z from 'zod';
 
 import { env } from '@/shared/config/env';
 
-export type InstanceCredentials = {
+export type ApiInstanceCredentials = {
   idInstance: string;
   apiTokenInstance: string;
 };
@@ -34,7 +34,7 @@ export function isApiError(error: unknown): error is ApiError {
 }
 
 type ApiClientConfig = {
-  getCredentials?: () => InstanceCredentials | null;
+  getCredentials?: () => ApiInstanceCredentials | null;
 };
 
 type RequestOptions<T> = {
@@ -43,7 +43,7 @@ type RequestOptions<T> = {
   schema: z.ZodType<T>;
   body?: unknown;
   signal?: AbortSignal;
-  credentials?: InstanceCredentials;
+  credentials?: ApiInstanceCredentials;
   pathSegments?: Array<string | number>;
   searchParams?: Record<string, string | number | boolean | undefined>;
 };
@@ -54,7 +54,7 @@ export function configureApiClient(config: ApiClientConfig): void {
   apiClientConfig = config;
 }
 
-function getCredentials(credentials?: InstanceCredentials): InstanceCredentials {
+function getCredentials(credentials?: ApiInstanceCredentials): ApiInstanceCredentials {
   const resolvedCredentials = credentials ?? apiClientConfig.getCredentials?.();
 
   if (!resolvedCredentials?.idInstance || !resolvedCredentials.apiTokenInstance) {
@@ -66,7 +66,7 @@ function getCredentials(credentials?: InstanceCredentials): InstanceCredentials 
 
 function createInstanceUrl(
   operation: string,
-  credentials: InstanceCredentials,
+  credentials: ApiInstanceCredentials,
   pathSegments: Array<string | number> = [],
   searchParams: Record<string, string | number | boolean | undefined> = {},
 ): string {

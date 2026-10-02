@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-import { request, type InstanceCredentials } from '../http-client';
+import { request, type ApiInstanceCredentials } from '../http-client';
 
 export const instanceStateSchema = z.enum([
   'authorized',
@@ -23,7 +23,7 @@ export type GetStateInstanceResponse = z.infer<typeof getStateInstanceResponseSc
 // https://green-api.com/docs/api/account/GetStateInstance/#getstateinstance
 
 export function getStateInstance(
-  credentials?: InstanceCredentials,
+  credentials?: ApiInstanceCredentials,
   signal?: AbortSignal,
 ): Promise<GetStateInstanceResponse> {
   return request({

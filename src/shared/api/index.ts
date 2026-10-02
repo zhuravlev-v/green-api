@@ -3,8 +3,8 @@ export {
   configureApiClient,
   isApiError,
   request,
+  type ApiInstanceCredentials,
   type ApiErrorKind,
-  type InstanceCredentials,
 } from './http-client';
 export {
   getStateInstance,
