@@ -10,3 +10,7 @@ export const phoneNumberSchema = z
 export function phoneChatId(phoneNumber: string): string {
   return `${phoneNumber}@c.us`;
 }
+
+export function extractPhoneNumber(chatId: string): string {
+  return chatId.endsWith('@c.us') ? chatId.slice(0, -5) : '';
+}
