@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/sha
 import { Input } from '@/shared/ui/input';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/shared/ui/form';
 import { loginCredentials } from '../login.schema';
+import { InstanceNotAuthorizedError } from '../hooks/use-login';
 
 type LoginFormProps = {
   onSuccess: (credentials: InstanceCredentials) => Promise<void>;
@@ -29,7 +30,10 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   const onSubmit = async (credentials: InstanceCredentials) => {
     try {
       await onSuccess(credentials);
-    } catch {
+    } catch (error) {
+      if (error instanceof InstanceNotAuthorizedError) {
+        form.setError('root', { message: error.message });
+      }
       return;
     }
   };
@@ -73,8 +77,11 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Login
+                Войти
               </Button>
+              {form.formState.errors.root?.message ? (
+                <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
+              ) : null}
             </fieldset>
           </form>
         </Form>

@@ -6,6 +6,11 @@ import {
   useInstanceStore,
   type InstanceCredentials,
 } from '@/entities/instance';
+import { useChatStore } from '@/entities/chat';
+
+export class InstanceNotAuthorizedError extends Error {
+  readonly name = 'InstanceNotAuthorizedError';
+}
 
 export function useLogin() {
   const queryClient = useQueryClient();
@@ -15,8 +20,13 @@ export function useLogin() {
   return async (credentials: InstanceCredentials) => {
     const instanceState = await checkInstanceCredentials.mutateAsync(credentials);
 
+    if (instanceState.stateInstance !== 'authorized') {
+      throw new InstanceNotAuthorizedError('Инстанс WhatsApp не авторизован');
+    }
+
     queryClient.clear();
-    setCredentials(credentials);
     queryClient.setQueryData(instanceKeys.state(credentials.idInstance), instanceState);
+    useChatStore.getState().setOwner(credentials.idInstance);
+    setCredentials(credentials);
   };
 }
